@@ -1,0 +1,20 @@
+{% load static %}
+
+<html>
+    <head>
+        <link rel="stylesheet" href="{% static 'q_test.css' %}">
+    </head>
+    <body> 
+        <form action="{% url 'r' %}" method="POST">
+                {% for question in questions %}
+                    {{ question.question }} <br>
+                    {% for q in question.answers %}
+                        <input name={{question.question_number}} value={{forloop.counter0}} type="radio">{{q}}<br>
+                    {% endfor %}
+                {% endfor %}
+            <button type="submit"> Enviar respuestas </button>
+</form>
+        <a href="{% url 'up' %}"> Inicio </a>
+    </body>
+</html>
+

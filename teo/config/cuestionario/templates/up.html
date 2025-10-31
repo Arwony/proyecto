@@ -1,0 +1,16 @@
+{% load static %}
+
+<html>
+    <head><link rel="stylesheet" href="{% static 'up.css' %}"></head>
+    <body>
+        <h1> Cuestionario </h1>
+        <form action="{% url 'gen' %}" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <label for="user_prompt"> Prompt:</label> <br>
+            <textarea rows="10" cols="30" maxlength="100" id="user_prompt" required name = "user_prompt" type="text"></textarea> <br>
+            <label for="user_prompt">Archivo: </label>
+            <input required class="user_file" name="user_file" type="file" accept=".pdf"> <br>
+            <input type="submit">
+        </form>
+    </body>
+</html>
