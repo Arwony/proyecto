@@ -1,13 +1,39 @@
 body {
-    background-color: black;
+    font-family: 'Monaco', monospace;
     text-align: center;
-    flex-direction: row;
+    margin: 0px;
+    color: #333333;
+    display: flex;
+    background-color: #F5F5F5;
+    text-align: center;
+    flex-direction: column;
     justify-content: center;
+}
+button{
+    align-items: center;
+    height: 75%;
+    font-size: 18px;
+    padding: 10px 20px;
+    justify-content: center;
+    cursor: pointer;
+    display: flex;
+    width: 25%;
+    background-color: #6EC1E4;
+    color: white;
+    border-radius: 5px;
+    border: none;
+    box-shadow: 0px 3px #57a3c4;
+}
+textarea{
+    resize: none;
+    box-shadow: 0px 3px rgb(0,0,0,0.5);
+    border-radius: 15px;
+    outline: none;
+    width: 50%;
+    height: 100%;
 }
 h1 {
     font-size: 50px;
-    text-align: center;
-    color: blueviolet;
 }
 form{
     display: inline-block;

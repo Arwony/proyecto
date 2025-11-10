@@ -1,66 +1,106 @@
-body{
-    background-color: aqua;
-    display: block;
+body {
+    font-family: 'Monaco', monospace;
+    text-align: center;
+    margin: 0px;
+    color: #333333;
+    display: flex;
+    background-color: #F5F5F5;
+    text-align: center;
+    flex-direction: column;
+    justify-content: center;
 }
 .bd{
-    display: flex;
+    display: grid;
     flex-direction: row;
-    justify-content: center;
-    align-content: center;
-    border: 9px solid white;
-    gap: 20px;
+    grid-template-columns: 1fr 7fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    justify-items: center;
+    align-items: center;
 }
 
 .contenedor{
-    border-radius: 8px;
-    background-color: rgb(222, 157, 78);
+    margin-top: 20px;
+    background-color:rgb(0,0,0,0);
+    border: 2px solid #6EC1E4;
+    width: 1000px;
+    height: 500px;
     display: grid;
     grid-template-columns: repeat(2, 1fr) !important;
-    grid-auto-rows: minmax(2fr, auto) !important;
+    grid-template-rows: 2fr 1.5fr 1.5fr !important;
+    justify-items: center;
+    align-items: center;
     gap: 10px !important;
 }
 .contenedor input[type="radio"]{
     height: auto;
 }
 .contenedor label{
-    font-size: 50px;
+    width: 95%;
+    height: 90%;
+    font-size: 1em;
     text-align: center;
     vertical-align: middle;
 }
 button:hover{
     transform: scale(1.02);
-    background-color: rgb(51, 146, 51);
+    background-color: #4e94b3;
 }
-.franja{
-    position: fixed;
-    height: 100px;
-    justify-items: center;  
-    border-radius: 10px;
-    font-size: 40px;
-    padding: 15px 0;
-    width: 100%;
-    bottom: 1%;
+
+.btn-outline-success {
+  color: #6EC1E4; /* color del texto */
+  border-color: #6EC1E4; /* color del borde */
+}
+
+.btn-check:checked + .btn-outline-success {
+  color: white; 
+  background-color: #6EC1E4; 
+  border-color: rgb(110, 193, 228);
+}
+
+.btn-outline-success:hover {
+  background-color: rgba(110, 193, 228, 0.1);
+  border-color: #6EC1E4;             
+  color: white;                        
+}
+
+.btn-check:focus + .btn-outline-success {
+  box-shadow: 0 0 0 0.25rem rgba(110, 193, 228, 0.25);
 }
 .nav{
+    height: 100%;
+    width: 100%;
     display: grid;
     justify-items: center;
     align-items: center;
 }
 .pregunta{
-    font-size: 50px;
-    text-align: justify;
-    height: auto;
-    width: 200%;
+    margin-top: 5px;
+    background-color: #6EC1E4;
+    color: #F5F5F5;
+    grid-column: 1 / -1;
+    font-size: 2vw;
+    text-align: center;
+    height: 100%;
+    width: 100%;
 }
 button{
+    margin-top: 20px;
     align-items: center;
-    height: 75%;
-    font-size: 18px;
+    height: 50%;
+    font-size: 1em;
     padding: 10px 20px;
     justify-content: center;
     cursor: pointer;
     display: flex;
-    width: 50%;
-    background-color: rgb(65, 183, 65);
+    width: 25%;
+    background-color: #6EC1E4;
     color: white;
+    border-radius: 5px;
+    border: none;
+    box-shadow: 0px 3px #57a3c4;
+}
+.comprobar{
+    width: 75%;
+    height: 100%;
+    grid-column: 1/-1
 }

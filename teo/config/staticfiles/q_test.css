@@ -1,0 +1,69 @@
+body{
+    display: block;
+}
+.bd{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-content: center;
+    border: 9px solid white;
+    gap: 20px;
+}
+
+.contenedor{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr) !important;
+    grid-auto-rows: minmax(2fr, auto) !important;
+    gap: 10px !important;
+}
+form{
+    align-items: center;
+    border: 20px rgb(87, 194, 79);
+    border-radius: 10px;
+    background-color: rgb(87, 194, 78);
+}
+.contenedor input[type="radio"]{
+    height: auto;
+}
+.contenedor label{
+    font-size: 50px;
+    text-align: center;
+    vertical-align: middle;
+}
+button:hover{
+    transform: scale(1.02);
+    background-color: rgb(51, 146, 51);
+}
+.franja{
+    position: fixed;
+    height: 100px;
+    justify-items: center;  
+    border-radius: 10px;
+    font-size: 40px;
+    padding: 15px 0;
+    width: 100%;
+    bottom: 1%;
+}
+.nav{
+    display: grid;
+    justify-items: center;
+    align-items: center;
+}
+.pregunta{
+    font-size: 50px;
+    text-align: justify;
+    height: auto;
+    width: 200%;
+}
+button{
+    align-items: center;
+    height: 75%;
+    font-size: 18px;
+    padding: 10px 20px;
+    justify-content: center;
+    cursor: pointer;
+    display: flex;
+    width: 50%;
+    background-color: rgb(65, 183, 65);
+    color: white;
+}

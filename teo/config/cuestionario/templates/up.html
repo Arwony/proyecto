@@ -1,3 +1,4 @@
+{% include 'base.html' %}
 {% load static %}
 
 <html>
@@ -11,7 +12,7 @@
                 <textarea rows="10" cols="30" maxlength="100" id="user_prompt" required name = "user_prompt" type="text"></textarea> <br>
                 <label for="user_prompt">Archivo: </label>
                 <input required class="user_file" name="user_file" type="file" accept=".pdf"> <br>
-                <input type="submit">
+                <button type="submit">Crear cuestionario</button> 
             </div>
 
         </form>

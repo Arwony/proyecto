@@ -19,22 +19,18 @@
         {% csrf_token %}
         {% for question in questions %}
             <div class="contenedor" id="{{forloop.counter0}}" hidden>
-                    <h1 class = "pregunta">{{ question.question }} </h1><br>
+                    <h1 class = "pregunta">{{ question.question }} </h1>
                     {% for q in question.answers %}
                         <input type="radio" class="btn-check" name="{{question.question_number}}" id="success-outlined{{question.question_number}}{{forloop.counter0}}" autocomplete="off" value={{forloop.counter0}}>
                         <label class="btn btn-outline-success" for="success-outlined{{question.question_number}}{{forloop.counter0}}">{{q}}</label>
                     {% endfor %}
+                    <button type="submit" class="comprobar">Enviar respuestas</button>
             </div>
         {% endfor %}
-        <div class="franja">
-            <button type="submit" class="comprobar">Enviar respuestas</button>
-        </div>
-    </form> 
+    </form>
     <div class="nav">
         <button class="na" onclick="qreq(1)">&gt;</button>
     </div>
-
-    <a href="{% url 'up' %}"> Inicio </a>
  </div>
 </body>
 
