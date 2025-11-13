@@ -10,8 +10,8 @@ client = genai.Client()
 #Crea un modelo base de Pydantic para el JSON schema de genai
 
 pregunta_base={
-    "question": "Hola como estás",
-    "answers": ["holi", "hola", "ola", "o"],
+    "question": "Se cayó la API, plop",
+    "answers": ["hola", "hola", "ola", "o"],
     "question_number": 1
 }
 class Question(BaseModel):
@@ -26,13 +26,16 @@ def hola(request):
 
 def forms_request(request):
      if request.method == "POST":
-          question_list=request.session.get("correct_answers")
-          corrects = 0
-
-          for i, v in question_list.items():           
+        question_list=request.session.get("correct_answers")
+        corrects = 0
+        q = request.session.get("q")
+        for i, v in question_list.items():           
             if request.POST.get(i)==str(v):
-                 corrects+=1
-          return render(request, "respuestas.html", {"correctas": f"{corrects}/{len(question_list)}"})
+                print(i, request.POST.get(i))
+                q[int(i) - 1]["ans"] = int(request.POST.get(i))
+                corrects+=1
+        print(q)
+        return render(request, "respuestas.html", {"a": q,"correctas": f"{corrects}/{len(question_list)}", "p":corrects/len(question_list)})
      
 def genai_request(request):
     if request.method == "POST":
@@ -64,16 +67,20 @@ def genai_request(request):
                     
                     #Por el momento vamos a dumpear el JSON uno a uno:
                     q = []
+                    g=[]
                     correct_answers = {}
+                    i=0
                     for question in response.parsed:
+                        i+=1
                         q_dumped = question.model_dump()
                         correct_answers[f"{q_dumped['question_number']}"] = q_dumped["correct_answer_index"]
-
+                        g.append(question.model_dump())
                         del q_dumped["correct_answer_index"]
                         q.append(q_dumped)
-                    
                     request.session["correct_answers"] = correct_answers
-                    return render(request, "q_test.html", {"questions": q})
+                    request.session["q"] = g
+                    print(g)
+                    return render(request, "q_test.html", {"questions": q, "n_q": i})
                 except ServerError as e:
                     request.session["correct_answers"] = {"1": 2}
                     return render(request, "q_test.html", {"questions": [pregunta_base]})
