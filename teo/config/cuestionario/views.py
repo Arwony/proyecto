@@ -5,6 +5,7 @@ from google.genai.errors import ServerError
 from .forms import Mensaje
 from django.views.decorators.csrf import csrf_exempt
 from pydantic import BaseModel
+import copy
 client = genai.Client()
 
 #Crea un modelo base de Pydantic para el JSON schema de genai
@@ -26,16 +27,17 @@ def hola(request):
 
 def forms_request(request):
      if request.method == "POST":
-        question_list=request.session.get("correct_answers")
+        question_list = request.session.get("question")
         corrects = 0
-        q = request.session.get("q")
-        for i, v in question_list.items():           
-            if request.POST.get(i)==str(v):
-                print(i, request.POST.get(i))
-                q[int(i) - 1]["ans"] = int(request.POST.get(i))
+
+        for i, v in enumerate(question_list):
+            str_i = str(i)       
+            v["ans"] = request.POST.get(str_i)
+            print(v["ans"])    
+            if request.POST.get(str_i) == v["correct_answer_index"]:
                 corrects+=1
-        print(q)
-        return render(request, "respuestas.html", {"a": q,"correctas": f"{corrects}/{len(question_list)}", "p":corrects/len(question_list)})
+        print(question_list)
+        return render(request, "respuestas.html", {"a": question_list,"correctas": f"{corrects}/{len(question_list)}", "p":corrects/len(question_list)})
      
 def genai_request(request):
     if request.method == "POST":
@@ -67,21 +69,17 @@ def genai_request(request):
                     
                     #Por el momento vamos a dumpear el JSON uno a uno:
                     q = []
-                    g=[]
-                    correct_answers = {}
-                    i=0
+                    serverside_q = []
+
                     for question in response.parsed:
-                        i+=1
                         q_dumped = question.model_dump()
-                        correct_answers[f"{q_dumped['question_number']}"] = q_dumped["correct_answer_index"]
-                        g.append(question.model_dump())
+                        serverside_q.append(question.model_dump())
+
                         del q_dumped["correct_answer_index"]
                         q.append(q_dumped)
-                    request.session["correct_answers"] = correct_answers
-                    request.session["q"] = g
-                    print(g)
-                    return render(request, "q_test.html", {"questions": q, "n_q": i})
+                    request.session["question"] = serverside_q
                 except ServerError as e:
-                    request.session["correct_answers"] = {"1": 2}
-                    return render(request, "q_test.html", {"questions": [pregunta_base]})
+                    request.session["question"] = [pregunta_base | {"correct_answer_index": 2}]
+                    q = [pregunta_base]
+                return render(request, "q_test.html", {"questions": q, "n_q": len(q)})
     return HttpResponse("Invalid file")
