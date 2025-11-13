@@ -27,11 +27,12 @@ def forms_request(request):
         question_list = request.session.get("question")
         corrects = 0
 
-        for i, v in enumerate(question_list):      
-            v["ans"] = int(request.POST.get(str(i + 1)))  
+        for i, v in enumerate(question_list):
+            user_answer = int(request.POST.get(str(i + 1), -1))      
+            v["ans"] = user_answer
 
-            if request.POST.get(str(i)) == v["correct_answer_index"]:
-                corrects+=1
+            if user_answer == v["correct_answer_index"]:
+                corrects += 1
                 
         return render(request, "respuestas.html", {"a": question_list,"correctas": f"{corrects}/{len(question_list)}", "p": corrects/len(question_list)})
      

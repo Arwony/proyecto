@@ -3,7 +3,7 @@
 <html lang="en">
 <head>   
     <meta charset="UTF-8">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 </head>
 <style>
     body{
@@ -38,17 +38,17 @@ Respuestas correctas:
         <form>
         {% for l in a %}
             <div class="contenedor" id="{{forloop.counter0}}">
-                <h1 class = "pregunta">{{ l.question }} </h1>
+                <h1 class = "pregunta">{{ l.question }}</h1>
                 {% for q in l.answers %}
                     {% if forloop.counter0 == l.correct_answer_index %}  
-                    <input checked disabled type="radio" class="btn-check" name="{{question.question_number}}" id="success-outlined{{question.question_number}}{{forloop.counter0}}" autocomplete="off" value={{forloop.counter0}}>
-                    <label class="btn btn-outline-success" for="success-outlined{{question.question_number}}{{forloop.counter0}}">{{q}}</label>        
+                        <input checked disabled type="radio" class="btn-check" id="success-outlined{{question.question_number}}{{forloop.counter0}}" autocomplete="off" value={{forloop.counter0}}>
+                        <label class="btn btn-outline-success" for="success-outlined{{question.question_number}}{{forloop.counter0}}">{{q}}</label>        
                     {% elif forloop.counter0 == l.ans %}
-                    <input checked disabled type="radio" class="btn-check" name="{{question.question_number}}" id="success-outlined{{question.question_number}}{{forloop.counter0}}" autocomplete="off" value={{forloop.counter0}}>
-                    <label class="btn btn-outline-danger" for="success-outlined{{question.question_number}}{{forloop.counter0}}">{{q}}</label>
+                        <input checked disabled type="radio" class="btn-check" id="success-outlined{{question.question_number}}{{forloop.counter0}}" autocomplete="off" value={{forloop.counter0}}>
+                        <label class="btn btn-outline-danger" for="success-outlined{{question.question_number}}{{forloop.counter0}}">{{q}}</label>
                     {% else %}
-                    <input disabled type="radio" class="btn-check" name="{{question.question_number}}" id="success-outlined{{question.question_number}}{{forloop.counter0}}" autocomplete="off" value={{forloop.counter0}}>
-                    <label class="btn btn-outline-success" for="success-outlined{{question.question_number}}{{forloop.counter0}}">{{q}}</label>                
+                        <input disabled type="radio" class="btn-check" id="success-outlined{{question.question_number}}{{forloop.counter0}}" autocomplete="off" value={{forloop.counter0}}>
+                        <label class="btn btn-outline-success" for="success-outlined{{question.question_number}}{{forloop.counter0}}">{{q}}</label>                
                     {% endif %}
                 {% endfor %}
             </div>
