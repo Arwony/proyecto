@@ -1,2 +1,0 @@
-- [x] Remove empty <style> tag from q_test.html
-- [x] Add complete minimalist CSS design to q_test.css with colored answer options (red, blue, green, yellow)
