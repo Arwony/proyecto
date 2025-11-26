@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+    .container {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        margin: 20px auto;
+        max-width: 500px;
+    }
+</style>
+
+<div class="container mt-4">
+    <h1 class="mb-3">Perfil de usuario: {{ user_id }}</h1>
+    <p><strong>Nombre de usuario:</strong> {{ email_prefix }}</p>
+
+    <h2>Formularios públicos</h2>
+    {% if public_formularios %}
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for formulario in public_formularios %}
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Formulario {{ forloop.counter }}</h5>
+                    <a href="{% url 'ver_formulario' formulario.id %}" class="btn btn-primary">Ver formulario</a>
+                </div>
+                <div class="card-footer text-muted">
+                    {% if formulario.is_public %}
+                    Público
+                    {% else %}
+                    Privado
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p>No hay formularios públicos para este usuario.</p>
+    {% endif %}
+</div>
+
+{% endblock %}
