@@ -57,7 +57,7 @@ ROOT_URLCONF = 'settings.urls'
 import os
 from dotenv import load_dotenv
 load_dotenv()
-GEMINI_API_KEY = os.getenv("AIzaSyAW9MXp_NlfUxCKxFI6csIb_f41q-77HY4")
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
