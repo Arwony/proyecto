@@ -1,19 +1,99 @@
-<style>
-    .bg{
-        background-color:rgba(0, 0, 0, 0.1);
-        align-items: center;
-        display: grid;
-        width: 100%;
-        box-shadow: 0px 3px rgba(0, 0, 0, 0.2);
-        height: 60px;
-    }
-    .bg .t{
-        width: 100%;
-        color: black;
-        text-align: left;
-        text-decoration: none;
-    }
-</style>
-<div class="bg">
-    <a class="t" href="{% url 'up' %}"> INICIO </a>
-</div>
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>   
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .bg {
+            background-color: rgba(215, 215, 215, 0.9);
+            align-items: center;
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            height: 60px;
+            border: 1.5px solid rgba(0, 0, 0, 0.25);
+            padding: 0 20px;
+            backdrop-filter: blur(6px);
+        }
+
+        main {
+            padding-top: 70px;
+        }
+
+        nav a img {
+            border: none;
+            outline: none;
+        }
+
+        nav a {
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="bg"> 
+        <a class="t" href="{% url 'main' %}">
+            <img src="{% static 'resources/logito.png' %}" alt="Logo" style="height: 60px;" />
+        </a>
+
+        <nav style="text-align: right; position: relative;">
+            <a href="{% url 'up' %}" style="margin-left: 20px; vertical-align: middle;">
+                <img src="{% static 'resources/home.png' %}" alt="Home" style="height: 30px;">
+            </a>
+
+            <a href="{% url 'about' %}" style="margin-left: 20px; vertical-align: middle;">
+                <img src="{% static 'resources/pregunta.png' %}" alt="About" style="height: 30px;">
+            </a>
+
+            <div id="menusito" style="display: inline-block; position: relative; margin-left: 20px; vertical-align: middle;">
+                <img id="icono-perfil" src="{% static 'resources/perfil.png' %}" alt="Perfil" style="height: 30px; cursor: pointer;">
+
+                <div id="menusito-abajo" style="display: none; position: absolute; right: 0; background-color: white; border: 1px solid #ccc; box-shadow: 0 8px 16px rgba(0,0,0,0.2); z-index: 100; min-width: 150px;">
+                    {% if user.is_authenticated %}
+                        <div style="padding: 5px; border-bottom: 1px solid #ddd;">
+                            Usuario: {{ user.username }}
+                        </div>
+                        <a href="{% url 'logout' %}" style="display: block; padding: 5px; color: black;">Cerrar Sesión</a>
+                    {% else %}
+                        <a href="{% url 'login' %}" style="display: block; padding: 5px; color: black;">Iniciar Sesión</a>
+                        <a href="{% url 'register' %}" style="display: block; padding: 5px; color: black;">Registrarse</a>
+                    {% endif %}
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/animation.js' %}"></script>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var profileIcon = document.getElementById('icono-perfil');
+        var profileDropdown = document.getElementById('menusito-abajo');
+
+        profileIcon.addEventListener('click', function(event) {
+            event.stopPropagation();
+            profileDropdown.style.display =
+                profileDropdown.style.display === "block"
+                ? "none"
+                : "block";
+        });
+
+        document.addEventListener('click', function() {
+            profileDropdown.style.display = "none";
+        });
+    });
+    </script>
+
+</body>
+</html>

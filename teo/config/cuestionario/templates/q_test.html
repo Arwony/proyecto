@@ -1,51 +1,329 @@
 {% include 'base.html' %}
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
-<head>   
+<html lang="es">
+
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <link rel="stylesheet" href="{% static 'q_test.css' %}">
+    <title>Cuestionario</title>
 </head>
+
 <body>
- <div class="bd">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>   
-    <div class="nav">
-        <button class="na" onclick= "qreq(-1)">&lt;</button>
-    </div>
-    <form action="{% url 'r' %}" method="POST">
-        {% csrf_token %}
-        {% for question in questions %}
+    <div class="bd">
+        <div class="nav-top">
+            <button class="na" onclick="qreq(-1)">
+                < </button>
+                    <button class="na" onclick="qreq(1)">></button>
+                    {% if not form_id %}
+                    <button class="save-btn" onclick="saveForm()">Guardar</button>
+                    {% elif is_owner %}
+                    <button class="toggle-btn" onclick="togglePublic()">
+                        {% if is_public %}Hacer Privado{% else %}Hacer Público{% endif %}
+                    </button>
+                    {% endif %}
+        </div>
+        <form action="{% url 'r' %}" method="POST">
+            {% csrf_token %}
+            {% for question in questions %}
             <div class="contenedor" id="{{forloop.counter0}}" hidden>
-                    <h1 class = "pregunta">{{ question.question }} </h1>
-                    {% for q in question.answers %}
-                        <input type="radio" class="btn-check" name="{{question.question_number}}" id="success-outlined{{question.question_number}}{{forloop.counter0}}" autocomplete="off" value={{forloop.counter0}}>
-                        <label class="btn btn-outline-success" for="success-outlined{{question.question_number}}{{forloop.counter0}}">{{q}}</label>
-                    {% endfor %}
-                    <button type="submit" class="comprobar">Enviar respuestas</button>
+                <h1 class="pregunta">{{ question.question }}</h1>
+                {% for q in question.answers %}
+                <input type="radio" class="btn-check" name="{{question.question_number}}"
+                    id="option{{question.question_number}}-{{forloop.counter0}}" autocomplete="off"
+                    value="{{forloop.counter0}}">
+                <label class="btn color-{{forloop.counter0}}"
+                    for="option{{question.question_number}}-{{forloop.counter0}}">{{q}}</label>
+                {% endfor %}
             </div>
-        {% endfor %}
-    </form>
-    <div class="nav">
-        <button class="na" onclick="qreq(1)">&gt;</button>
+            {% endfor %}
+            <button type="submit" class="comprobar">Enviar respuestas</button>
+        </form>
     </div>
- </div>
 </body>
 
 <script>
     let i = 0;
-    let a = '{{n_q}}';
+    let a = {{ n_q }};
+    const questionsData = {{ questions_json| safe }};
     document.getElementById(i).hidden = false;
 
-    function qreq(m){
-        if (i + m < 0 || i + m >= a){
-            return;         
+    function qreq(m) {
+        if (i + m < 0 || i + m >= a) {
+            return;
         }
-
         document.getElementById(i.toString()).hidden = true;
         document.getElementById((i + m).toString()).hidden = false;
-        i+=m;
+        i += m;
+    }
+
+    async function saveForm() {
+        try {
+            const response = await fetch('/guardar_formulario/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    form_data: questionsData
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.status === 'ok') {
+                alert('¡Formulario guardado exitosamente!');
+                window.location.href = `/formulario/${data.form_id}/`;
+            } else {
+                alert('Error al guardar: ' + data.message);
+            }
+        } catch (error) {
+            alert('Error al guardar el formulario: ' + error.message);
+        }
+    }
+
+    async function togglePublic() {
+        const formId = '{{ form_id }}';
+        try {
+            const response = await fetch(`/formulario/${formId}/toggle_public/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                }
+            });
+
+            const data = await response.json();
+
+            if (data.status === 'ok') {
+                alert(data.is_public ? 'Formulario ahora es público' : 'Formulario ahora es privado');
+                location.reload();
+            } else {
+                alert('Error: ' + data.message);
+            }
+        } catch (error) {
+            alert('Error al cambiar el estado: ' + error.message);
+        }
+    }
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
     }
 </script>
+
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f8f9fa;
+        margin: 0;
+        padding: 0;
+        color: #333;
+    }
+
+    .bd {
+        max-width: 800px;
+        margin: 40px auto;
+        padding: 40px;
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        min-height: 80vh;
+    }
+
+    .nav-top {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 30px;
+        gap: 10px;
+    }
+
+    .na {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 500;
+        transition: background-color 0.3s;
+        flex: 1;
+    }
+
+    .na:hover {
+        background-color: #0056b3;
+    }
+
+    .save-btn {
+        background-color: #28a745;
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 15px;
+        font-weight: 500;
+        transition: all 0.3s;
+        white-space: nowrap;
+    }
+
+    .save-btn:hover {
+        background-color: #218838;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+    }
+
+    .toggle-btn {
+        background-color: #6c757d;
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 15px;
+        font-weight: 500;
+        transition: all 0.3s;
+        white-space: nowrap;
+    }
+
+    .toggle-btn:hover {
+        background-color: #5a6268;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(108, 117, 125, 0.3);
+    }
+
+    .contenedor {
+        text-align: center;
+        width: 100%;
+        padding: 20px 0;
+    }
+
+    .pregunta {
+        font-size: 1.8rem;
+        margin-bottom: 40px;
+        color: #333;
+        font-weight: 400;
+        line-height: 1.4;
+        padding: 20px;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        border-left: 4px solid #007bff;
+    }
+
+    .btn-check {
+        display: none;
+    }
+
+    .btn {
+        margin: 12px;
+        padding: 18px 30px;
+        border-radius: 40px;
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        border: none;
+        width: 45%;
+        display: inline-block;
+        text-align: center;
+        font-weight: 500;
+        box-sizing: border-box;
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-check:checked+.btn {
+        transform: scale(1.05);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+        opacity: 1;
+    }
+
+    .color-0 {
+        background-color: #dc3545;
+        color: white;
+    }
+
+    .color-0:hover {
+        background-color: #c82333;
+    }
+
+    .color-1 {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .color-1:hover {
+        background-color: #0056b3;
+    }
+
+    .color-2 {
+        background-color: #28a745;
+        color: white;
+    }
+
+    .color-2:hover {
+        background-color: #1e7e34;
+    }
+
+    .color-3 {
+        background-color: #ffc107;
+        color: #333;
+    }
+
+    .color-3:hover {
+        background-color: #e0a800;
+    }
+
+    .comprobar {
+        background-color: #6c757d;
+        color: white;
+        border: none;
+        padding: 16px 40px;
+        border-radius: 6px;
+        font-size: 1.2rem;
+        font-weight: 500;
+        cursor: pointer;
+        margin: 40px auto 0;
+        display: block;
+        transition: background-color 0.3s;
+    }
+
+    .comprobar:hover {
+        background-color: #5a6268;
+    }
+
+    @media (max-width: 600px) {
+        .bd {
+            padding: 20px;
+            margin: 20px;
+        }
+
+        .btn {
+            width: 90%;
+            margin: 10px 0;
+        }
+
+        .pregunta {
+            font-size: 1.4rem;
+        }
+
+        .nav-top {
+            flex-direction: column;
+        }
+    }
+</style>
+
+</html>
